@@ -10,7 +10,7 @@ This was created for a practical skills assessment.
 
 Complete the following instructions to meet the defined objectives.
 
-This guide and its associated scripts assume that the SSH public key has not already been imported to DigitalOcean and that the droplet does not already exist. If they currently exist, they will need to be deleted before continuing the automated setup process.
+This guide and its associated scripts assume that the SSH public key named "chozian" has not already been imported to DigitalOcean and that the droplet named "ha-do-chozian" does not already exist. If they currently exist, they will need to be deleted before continuing the automated setup process.
 
 The necessary SSH key pair has already been generated using "ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa.ha-do-chozian -q -N "" -C chozian@TempForHA" and placed in this repo.
 
