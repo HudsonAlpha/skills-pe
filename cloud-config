@@ -1,0 +1,36 @@
+#cloud-config
+users:
+  - name: wannabe
+    passwd: $6$y3MqQ1im$dRwTseeMQHVLtTDXD95gqegkZHlDpf93ZwVboHdV009PXjNLZtAYRTIWyfmKds/WPYOIEVNuzZtKtqhh97f4s.
+    lock-passwd: False
+    shell: /bin/bash
+write_files:
+  - path: /usr/local/bin/date_10secs.sh
+    owner: root:root
+    permissions: 0755
+    content: |
+      #! /bin/bash
+
+      # Display date and time every 10 seconds
+      while true
+      do
+      	date
+      	sleep 10
+      done
+      
+  - path: /tmp/crontab.stub
+    owner: root:root
+    permissions: 0644
+    content: |
+      @reboot	docker run -it -d -v /usr/local/bin:/usr/local/bin debian /usr/local/bin/date_10secs.sh
+      
+runcmd:
+  - sed -i 's/^PasswordAuthentication yes$/PasswordAuthentication no/g' /etc/ssh/sshd_config
+  - systemctl restart sshd
+  - timedatectl set-timezone US/Central
+  - curl -fsSL https://get.docker.com/ | sh
+  - systemctl start docker
+  - systemctl enable docker
+  - usermod -aG docker wannabe
+  - su -c "docker run -it -d -v /usr/local/bin:/usr/local/bin debian /usr/local/bin/date_10secs.sh" wannabe
+  - su -c "crontab /tmp/crontab.stub" wannabe
