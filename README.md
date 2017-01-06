@@ -1,28 +1,44 @@
-# skills-pe
-  
-You have 24 hours to complete the following tasks. Automate as much as possible and be creative (the requirements below are minimum requirements).  If you make assumptions when completing the steps, be sure to discuss those as part of your final documentation.  Use the DigitalOcean API token provided via email.
+## Synopsis
 
-TASK 1   
-Create a DigitalOcean droplet with the following:  
-CentOS 7.x 64-bit OS  
-SSH key-based login  
-New York 1 region  
-1 vCPU  
-512 MB RAM  
-20GB disk  
-non-privileged account “wannabe” with password set to “P@ssw0rd”  
-US/Central timezone  
-script in /usr/local/bin (language of your choosing):  
-This script should output the current date and time every 10 seconds, in format of your choosing
+This project aims to meet the objectives defined in the README.md at https://github.com/HudsonAlpha/skills-pe.
 
-TASK 2    
-Log into droplet  
-Configure system to disallow password based login (allow key-based login only)  
-Create a startup script that will run as the “wannabe” user and will launch a docker container inside the droplet.  The container should run in the background and execute your script from the droplet filesystem   
-When finished with configuration, leave the droplet in a powered-off state
+## Motivation
 
-TASK 3    
-Document the entire process (in format of your choosing)
+This was created for a practical skills assessment.
 
-TASK 4    
-Create a GitHub pull request with any script and configuration files that you created or modified, your SSH private key (that corresponds to the droplet’s public key), and documentation
+## Installation
+
+Complete the following instructions to meet the defined objectives.
+
+This guide and its associated scripts assume that the SSH public key named "chozian" has not already been imported to DigitalOcean and that the droplet named "ha-do-chozian" does not already exist. If they currently exist, they will need to be deleted before continuing the automated setup process.
+
+The necessary SSH key pair has already been generated using "ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa.ha-do-chozian -q -N "" -C chozian@TempForHA" and placed in this repo.
+
+First, download and install doctl, a command line tool for DigitalOcean services, on your Mac or Linux box according to the section titled "Option 2 – Download a Release from GitHub" in the README.md at https://github.com/digitalocean/doctl.
+
+Clone this repo by executing "git clone https://github.com/chozian/skills-pe chozian-skills-pe".
+
+Change directory to the cloned repo by executing "cd chozian-skills-pe".
+
+Execute "./setup.sh" to begin the automated setup process.
+
+Enter your DigitalOcean access token when prompted. Then press Enter. If your token is successfully validated, you should receive "Validating token: OK".
+
+Please wait up to 5 minutes for all of the automated setup to complete upon first boot up of the droplet. Then the droplet may be examined to confirm that all objectives have been met.
+
+You may remotely access the droplet via SSH by executing "doctl compute ssh ha-do-chozian --ssh-key-path ./id_rsa.ha-do-chozian".
+
+"docker ps" may be used within the droplet to determine the Docker container ID related to the wannabe user's date/time script. Execute "docker attach [container_id]" to attach to this container. You can detach from this container by pressing CTRL+P, CTRL+Q.
+
+You may log out of the droplet by executing "exit" or shut it down by executing "shutdown -h now".
+
+The droplet may be powered off by executing "doctl compute droplet-action power-off [droplet_ID]". The droplet ID can be obtained by reviewing the output when executing "doctl compute droplet list".
+
+## Contributors
+
+Chris Hozian
+
+## License
+
+Unlicense
+
