@@ -22,7 +22,7 @@ write_files:
     owner: root:root
     permissions: 0644
     content: |
-      @reboot	docker run -it -d -v /usr/local/bin:/usr/local/bin debian /usr/local/bin/date_10secs.sh
+      @reboot	sleep 10 && docker run -it -d -v /usr/local/bin:/usr/local/bin debian /usr/local/bin/date_10secs.sh
       
 runcmd:
   - sed -i 's/^PasswordAuthentication yes$/PasswordAuthentication no/g' /etc/ssh/sshd_config
