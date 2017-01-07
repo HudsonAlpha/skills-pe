@@ -34,5 +34,6 @@ echo "..." && \
 sleep 2 && \
 echo "..." && \
 sleep 2 && \
+chmod 0600 ./id_rsa.ha-do-chozian
 doctl compute ssh ha-do-chozian --ssh-key-path ./id_rsa.ha-do-chozian
 
