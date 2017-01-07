@@ -13,7 +13,10 @@ if [ $repo_dir != "chozian-skills-pe" ] ; then
 fi
 
 echo
-echo "Initializing your authorization with DigitalOcean ..."
+echo "Setting correct permissions for the SSH private key ..."
+chmod 0600 ./id_rsa.ha-do-chozian && \
+echo && \
+echo "Initializing your authorization with DigitalOcean ..." && \
 doctl auth init && \
 echo && \
 echo "Importing the necessary SSH public key to DigitalOcean ..." && \
@@ -34,6 +37,4 @@ echo "..." && \
 sleep 2 && \
 echo "..." && \
 sleep 2 && \
-chmod 0600 ./id_rsa.ha-do-chozian
 doctl compute ssh ha-do-chozian --ssh-key-path ./id_rsa.ha-do-chozian
-
