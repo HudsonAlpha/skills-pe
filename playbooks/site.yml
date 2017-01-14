@@ -1,0 +1,8 @@
+---
+- remote_user: root
+  gather_facts: no
+  hosts: all
+
+  roles:
+    - common
+    - docker

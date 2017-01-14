@@ -1,0 +1,12 @@
+---
+- name: Make sure server is reachable
+  wait_for: port=22 host={{ inventory_hostname }} state=started timeout=300
+
+- name: Add user {{ username }} to system
+  user: home=/srv/{{ username }} name={{ username }} shell=/bin/bash createhome=no system=yes password={{ password }}
+
+- name: Change timezone to {{ timezone }}
+  timezone: name={{ timezone }}
+
+- name: Copy script to system
+  copy: src=datetime dest=/usr/local/bin/datetime owner=root group=root mode=755
