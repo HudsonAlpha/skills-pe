@@ -8,6 +8,7 @@ Make sure you have your Digital Ocean api key available. Once you have that, cop
 
 
 You'll need to have some commands available to start. Consult your local package manager if they aren't:
+
 1. python 2.7
 2. pip
 3. virtualenv
@@ -15,6 +16,7 @@ You'll need to have some commands available to start. Consult your local package
 5. rsync
 
 The following development packages are needed as well:
+
 1. python
 2. openssl
 
@@ -38,27 +40,33 @@ To make sure that you have everything, you should have `ansible-playbook` and `d
 
 ### Deploying
 
-* Use `dont` to create a Centos machine
-  1. Use `dont list` (run the command without any arguments, it has some minimalist help included to get you started), to list all available droplet sizes, images, and datacenters. At the time of this writing, the id for each of the 'chosen' items were 0 (for 512mb image), 46 (for CentOS 7.3.1611 x6), and 0 (for New York 1)
-  2. `dont create` has a few flags that need to be given to create a machine: `--size`, `--image`, `--datacenter` (short forms are `-n`, `-i`, and `-d`, respectively). To create a machine, the following command should suffice: `dont create --size 0 --image 46 --datacenter 0 examplehostname`, where examplehostname is a droplet hostname of your choosing
-  3. If the command was successful, issue `dont listnodes` to list all active droplets. You should be able to see the hostname, ip address, status, and unique identifier for that machine. Take note of the ip, and place it in a file called `inventory.ini` under `playbooks`, which should look like this:
+#### Use `dont` to create a Centos machine
+
+1. Use `dont list` (run the command without any arguments, it has some minimalist help included to get you started), to list all available droplet sizes, images, and datacenters. At the time of this writing, the id for each of the 'chosen' items were 0 (for 512mb image), 46 (for CentOS 7.3.1611 x6), and 0 (for New York 1)
+2. `dont create` has a few flags that need to be given to create a machine: `--size`, `--image`, `--datacenter` (short forms are `-n`, `-i`, and `-d`, respectively). To create a machine, the following command should suffice: `dont create --size 0 --image 46 --datacenter 0 examplehostname`, where examplehostname is a droplet hostname of your choosing
+3. If the command was successful, issue `dont listnodes` to list all active droplets. You should be able to see the hostname, ip address, status, and unique identifier for that machine. Take note of the ip, and place it in a file called `inventory.ini` under `playbooks`, which should look like this:
 ```
 [default]
 your_ip_address_here
 ```
 A helpful bash one-liner for this would look like: `echo [default] > playbooks/inventory.ini && dont listnodes | grep -i $hostname | egrep --only-matching '([0-9]+\.){3}[0-9]+' >> playbooks/inventory.ini`
-* Use ansible to configure the machine
-  1. To run ansible against the remote machine, issue the ansible-playbook command:
+#### Use ansible to configure the machine
+
+To run ansible against the remote machine, issue the ansible-playbook command:
 ```
 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook --key-file=/full/path/to/skills-pe/misc/hudsonalpha -i playbooks/inventory.ini playbooks/site.yml
 ```
-  To break this into parts:
-    1. `ANSIBLE_HOST_KEY_CHECKING=False` is to prevent ansible from checking the remote hosts against `~/.ssh/known_hosts`. If this is important to you, please leave it out.
-    2. `ansbile-playbook` is the command
-    3. `--key-file=/full/path/to/skills-pe/misc/hudsonalpha` There is a bug with --key-file if you're manually specifying a key where some ansible modules (like the module that depend on rsync) fail to find the ssh key. Specifying the full path overcomes this.
-    4. `-i playbooks/inventory.ini` specifies the 'inventory file', which is ansible parlance for the list of machines you want to run a playbook on
-    5. `playbooks/site.yml` is the playbook to execute against
-  2. After a while, the playbooks should complete after telling you the status of each task (creating user, installing docker, building docker containers, etc). To log into the machine, use `ssh -i misc/hudsonalpha root@your_ip_address` to login to the machine and verify anything you need to
+To break this into parts:
+
+  * `ANSIBLE_HOST_KEY_CHECKING=False` is to prevent ansible from checking the remote hosts against `~/.ssh/known_hosts`. If this is important to you, please leave it out.
+  * `ansbile-playbook` is the command
+  * `--key-file=/full/path/to/skills-pe/misc/hudsonalpha` There is a bug with --key-file if you're manually specifying a key where some ansible modules (like the module that depend on rsync) fail to find the ssh key. Specifying the full path overcomes this.
+  * `-i playbooks/inventory.ini` specifies the 'inventory file', which is ansible parlance for the list of machines you want to run a playbook on
+  * `playbooks/site.yml` is the playbook to execute against
+
+#### Checking the machine
+
+After a while, the playbooks should complete after telling you the status of each task (creating user, installing docker, building docker containers, etc). To log into the machine, use `ssh -i misc/hudsonalpha root@your_ip_address` to login to the machine and verify anything you need to
 
 ## Assumptions
 
