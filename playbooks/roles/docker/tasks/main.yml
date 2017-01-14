@@ -1,0 +1,30 @@
+---
+- name: Make sure server is reachable
+  wait_for: port=22 host={{ inventory_hostname }} state=started timeout=300
+
+- name: Copy Docker repo file
+  copy: src=docker.repo dest=/etc/yum.repos.d/docker.repo owner=root group=root mode=644
+
+- name: Update all packages
+  yum: name='*' state=latest # update everything
+
+- name: Install Docker
+  yum: name='docker-engine' state=present
+
+- name: Enable Docker Service
+  service: name=docker enabled=yes state=started
+
+- name: Add {{ common_username }} to docker group
+  user: name={{ common_username }} append=yes groups='docker'
+
+- name: Synchronize docker build directory to host
+  synchronize: src=image dest=/tmp
+
+- name: Build docker image
+  command: docker build -t datetime:habuild /tmp/image
+
+- name: Copy datetime service file
+  copy: src=datetime.service dest=/usr/lib/systemd/system/ owner=root group=root mode=644
+
+- name: Enable datetime service
+  service: name=datetime enabled=yes state=started
