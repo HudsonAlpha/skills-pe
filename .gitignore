@@ -96,3 +96,6 @@ ENV/
 
 # inventory files
 inventory.ini
+
+# site retry file in case something goes wrong
+site.retry
