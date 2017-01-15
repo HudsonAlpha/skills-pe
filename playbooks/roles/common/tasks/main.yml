@@ -1,0 +1,16 @@
+---
+- name: Make sure server is reachable
+  wait_for: port=22 host={{ inventory_hostname }} state=started timeout=300
+
+- name: Add user {{ common_username }} to system
+  user: home=/srv/{{ common_username }} name={{ common_username }} shell=/bin/bash createhome=no system=yes password={{ password }}
+
+- name: Change timezone to {{ timezone }}
+  timezone: name={{ timezone }}
+
+- name: Copy script to system
+  copy: src=datetime dest=/usr/local/bin/datetime owner=root group=root mode=755
+
+- name: Disable password logins through ssh
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
+  notify: Restart ssh

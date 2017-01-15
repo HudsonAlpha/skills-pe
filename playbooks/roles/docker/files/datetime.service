@@ -1,0 +1,14 @@
+[Unit]
+Description=starts datetime container
+After=docker.service
+Requires=docker.service
+
+[Service]
+User=wannabe
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker stop datetime
+ExecStartPre=-/usr/bin/docker rm datetime
+ExecStart=/usr/bin/docker run -d --name datetime datetime:habuild
+ExecStop=/usr/bin/docker stop -t 11 datetime
+ExecStop=/usr/bin/docker rm datetime
