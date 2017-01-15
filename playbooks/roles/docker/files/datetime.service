@@ -10,5 +10,5 @@ Restart=always
 ExecStartPre=-/usr/bin/docker stop datetime
 ExecStartPre=-/usr/bin/docker rm datetime
 ExecStart=/usr/bin/docker run -d --name datetime datetime:habuild
-ExecStopPre=-/usr/bin/docker stop -t 11 datetime
+ExecStop=/usr/bin/docker stop -t 11 datetime
 ExecStop=/usr/bin/docker rm datetime

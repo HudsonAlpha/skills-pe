@@ -14,6 +14,7 @@ You'll need to have some commands available to start. Consult your local package
 3. virtualenv
 4. gcc
 5. rsync
+6. dos2unix
 
 The following development packages are needed as well:
 
@@ -29,6 +30,11 @@ pip install virtualenv
 ```
 
 Also, git mangles the permission on the ssh keys, correct them with: `chmod 0600 misc/hudsonalpha*`
+
+If you have issues with installation, they may not be in a unix format. To fix, run the following command from the root of the repo:
+```
+find ./ -type f -exec dos2unix {};
+```
 
 ### Installing
 
