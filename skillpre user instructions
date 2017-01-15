@@ -1,0 +1,87 @@
+TASK 1
+Create a DigitalOcean droplet with the following:
+CentOS 7.x 64-bit OS
+SSH key-based login
+New York 1 region
+1 vCPU
+512 MB RAM
+20GB disk
+non-privileged account “wannabe” with password set to “P@ssw0rd”
+US/Central timezone
+script in /usr/local/bin (language of your choosing):
+This script should output the current date and time every 10 seconds, in format of your choosing
+------------------------------------------------------------------------------------------------------------------------------
+1.	Log into your Linux or Mac OS native machine. 
+2.	Install the digital ocean command line tool with packet manager on the OS. If needed use link below to assist with the installation.
+
+# wget https://github.com/digitalocean/doctl/releases/download/v1.4.0/doctl-1.4.0-linux-    amd64.tar.gz
+# tar xf ~/doctl-1.4.0-linux-amd64.tar.gz
+https://www.digitalocean.com/community/tutorials/how-to-use-doctl-the-official-digitalocean-command-line-client
+3.	Install the GIT command tool using the packet manager given by the OS 
+        # yum intall git
+4.	Create a SSH key  with ssh-keygen -t rsa
+
+5.	Clone your GIT repo 
+      [root@starkiller opt]# git clone https://github.com/lordzadr/skills-pe 
+       Cloning into 'skills-pe'...
+remote: Counting objects: 15, done.
+remote: Compressing objects: 100% (7/7), done.
+remote: Total 15 (delta 3), reused 15 (delta 3), pack-reused 0
+Unpacking objects: 100% (15/15), done.
+6.	Initiate your digital ocean api key. 
+doctl auth init
+     DigitalOcean access token: your_DO_token
+      
+      Output
+      Validating token: OK
+  
+7.	Configure a SSH Key with the digital oceans command line tool 
+  Note: This must be create before creating a droplet or  you will unable to login into the droplet. 
+      # doctl compute ssh-key import patelk --public-key-file id_rsa.pub
+8.	Create the droplet using the doctl 
+# doctl compute droplet create centos7-kpatel --size 512mb --image centos-7.2-x64 --region nyc1 --ssh-keys 9f:c2:0a:40:b3:63:bb:2f:d3:0a:11:fc:14:ba:e5:ae
+Note: For the ssh-keys, do a doctl compute ssh-key list and find the key that corresponds to the userid you created your ssh-key with ( see below). 
+[patelk@starkiller ~]$ doctl compute ssh-key list
+ID      Name     FingerPrint
+5873230 patelk   9f:c2:0a:40:b3:63:bb:2f:d3:0a:11:fc:14:ba:e5:ae
+
+TASK 2
+Log into droplet
+Configure system to disallow password based login (allow key-based login only)
+Create a startup script that will run as the “wannabe” user and will launch a docker container inside the droplet. The container should run in the background and execute your script from the droplet filesystem
+When finished with configuration, leave the droplet in a powered-off state
+---------------------------------------------------------------------------------------------------------------------
+
+9.	Login into the drop using the doctl compute ssh <droplet name> 
+      [patelk@starkiller ~]$ doctl compute droplet list
+ID       Name   Public IPv4     Public IPv6     Memory  VCPUs   Disk    Region  Image           Status  Tags
+37216656 centos7-kpatel 198.211.114.237             512 1       20      nyc1  CentOS 7.2 x64    active
+
+[patelk@starkiller ~]$ doctl compute ssh centos7-kpatel
+Enter passphrase for key '/home/patelk/.ssh/id_rsa':
+
+
+10.	Configure time zone to be Central using timedatectl 
+timedatectl set-timezone America/Chicago
+
+11.	Configure the non privilege wannabe account 
+useradd -s /usr/sbin/nologin -r wannabe
+
+12.	Disable password based in the sshd_config file with your favorite editor 
+                    vi /etc/ssh/sshd_config 
+             edit the PasswordAuthentication no
+
+              And restart sshd daemon 
+              systemctl restart sshd.service
+
+
+13.	Add the custom date.sh script to the /usr/local/bin
+
+14.	Install and configure docker service using the following link below. 
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-centos-7
+
+
+
+15.	Add the startup dockerstartup.sh  
+
+
